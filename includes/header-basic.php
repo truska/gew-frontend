@@ -3,6 +3,13 @@ $baseURL = cms_base_url();
 $logo = trim((string) cms_pref('prefLogo', 'green-energy-wind-logo.jpg'));
 $telephone = cms_tel_data('prefTel1', 'prefTelIntCode', '');
 $email = trim((string) cms_pref('prefEmail', ''));
+$requestHost = strtolower((string) ($_SERVER['HTTP_HOST'] ?? $_SERVER['SERVER_NAME'] ?? ''));
+$requestHost = preg_replace('/:\d+$/', '', $requestHost);
+$isDevelopmentSite = !empty($IS_LOCAL)
+  || ($DB_CONFIG_SOURCE ?? '') === 'dbcon-local.php'
+  || ($APP_ENV ?? '') === 'local'
+  || str_starts_with($requestHost, 'dev-')
+  || in_array($requestHost, ['localhost', '127.0.0.1', '::1'], true);
 $fontAwesomeVersion = trim((string) cms_pref('prefFontAwesomeVersion', '6.5.2'));
 if (!preg_match('/^6\.\d+\.\d+$/', $fontAwesomeVersion)) {
   $fontAwesomeVersion = '6.5.2';
@@ -28,6 +35,9 @@ if (file_exists($cmsImagesPath)) {
   <?php endif; ?>
 </head>
 <body>
+<?php if ($isDevelopmentSite): ?>
+  <div class="development-site-banner" role="status" style="width:100%;padding:7px 16px;background:#c40000;color:#fff;font-size:24px;font-weight:700;line-height:1.25;text-align:center;">DEVELOPMENT SITE</div>
+<?php endif; ?>
 <header class="site-header">
   <div class="container header-top">
     <div class="row align-items-center gx-3 gy-lg-3 w-100">

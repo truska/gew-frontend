@@ -23,6 +23,16 @@
   --content-black-text: #ffffff;
 }
 body { color: var(--color-text); font-family: Arial, sans-serif; line-height: 1.6; }
+.development-site-banner {
+  width: 100%;
+  padding: 0.35rem 1rem;
+  background: #c40000;
+  color: #fff;
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 1.25;
+  text-align: center;
+}
 .site-header { background: #fff; border-bottom: 1px solid #dce6df; }
 .header-top { padding-top: 1rem; padding-bottom: 1rem; }
 .brand { display: inline-block; }
