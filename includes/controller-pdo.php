@@ -9,47 +9,67 @@ if (empty($DB_OK) || !isset($pdo) || !($pdo instanceof PDO)) {
 $requestedPath = trim((string) ($_GET['url'] ?? ''), '/');
 $pageSlug = explode('/', $requestedPath !== '' ? $requestedPath : 'welcome')[0];
 $pageNotFound = false;
+$frontendUnavailable = false;
 $pageData = [];
 $pageContentItems = [];
 $menuItems = [];
 $footerTestimonial = [];
 
-$pageStatement = $pdo->prepare(
-    "SELECT * FROM pages
-     WHERE slug = :slug AND showonweb = 'Yes' AND archived = 0
-     LIMIT 1"
-);
-$pageStatement->execute(['slug' => $pageSlug]);
-$pageData = $pageStatement->fetch(PDO::FETCH_ASSOC) ?: [];
+try {
+    $pageStatement = $pdo->prepare(
+        "SELECT * FROM pages
+         WHERE slug = :slug AND showonweb = 'Yes' AND archived = 0
+         LIMIT 1"
+    );
+    $pageStatement->execute(['slug' => $pageSlug]);
+    $pageData = $pageStatement->fetch(PDO::FETCH_ASSOC) ?: [];
+} catch (PDOException $exception) {
+    error_log('Frontend pages query failed: ' . $exception->getMessage());
+    $frontendUnavailable = true;
+    // Keep older/server-managed entry points from attempting normal content rendering.
+    $pageNotFound = true;
+}
 
-if (!$pageData) {
+if ($frontendUnavailable) {
+    $pageTitle = 'Website temporarily unavailable';
+} elseif (!$pageData) {
     $pageNotFound = true;
     $pageTitle = 'Page not found';
 } else {
     $pageTitle = $pageData['titletag'] ?: ($pageData['name'] ?: cms_pref('prefSiteName', 'Green Energy Wind'));
     $pageMetaDescription = (string) ($pageData['metadescription'] ?? '');
 
-    $contentStatement = $pdo->prepare(
-        "SELECT c.*, l.url AS layout_url, l.name AS layout_name
-         FROM content c
-         LEFT JOIN layout l ON l.id = c.layout
-         WHERE c.page = :page_id AND c.showonweb = 'Yes' AND c.archived = 0
-         ORDER BY c.sort, c.id"
-    );
-    $contentStatement->execute(['page_id' => (int) $pageData['id']]);
-    $pageContentItems = $contentStatement->fetchAll(PDO::FETCH_ASSOC) ?: [];
+    try {
+        $contentStatement = $pdo->prepare(
+            "SELECT c.*, l.url AS layout_url, l.name AS layout_name
+             FROM content c
+             LEFT JOIN layout l ON l.id = c.layout
+             WHERE c.page = :page_id AND c.showonweb = 'Yes' AND c.archived = 0
+             ORDER BY c.sort, c.id"
+        );
+        $contentStatement->execute(['page_id' => (int) $pageData['id']]);
+        $pageContentItems = $contentStatement->fetchAll(PDO::FETCH_ASSOC) ?: [];
+    } catch (PDOException $exception) {
+        error_log('Frontend content query failed: ' . $exception->getMessage());
+        $pageContentItems = [];
+    }
 }
 
-$menuStatement = $pdo->query(
-    "SELECT mi.*, p.slug AS page_slug
-     FROM menu_items mi
-     INNER JOIN menus m ON m.id = mi.menu_id
-     LEFT JOIN pages p ON p.id = mi.page_id
-     WHERE m.location = 'header' AND m.active = 1 AND m.showonweb = 'Yes'
-       AND m.archived = 0 AND mi.showonweb = 'Yes' AND mi.archived = 0
-     ORDER BY COALESCE(mi.parent_id, mi.id), mi.parent_id IS NOT NULL, mi.sort, mi.id"
-);
-$menuItems = $menuStatement ? ($menuStatement->fetchAll(PDO::FETCH_ASSOC) ?: []) : [];
+try {
+    $menuStatement = $pdo->query(
+        "SELECT mi.*, p.slug AS page_slug
+         FROM menu_items mi
+         INNER JOIN menus m ON m.id = mi.menu_id
+         LEFT JOIN pages p ON p.id = mi.page_id
+         WHERE m.location = 'header' AND m.active = 1 AND m.showonweb = 'Yes'
+           AND m.archived = 0 AND mi.showonweb = 'Yes' AND mi.archived = 0
+         ORDER BY COALESCE(mi.parent_id, mi.id), mi.parent_id IS NOT NULL, mi.sort, mi.id"
+    );
+    $menuItems = $menuStatement ? ($menuStatement->fetchAll(PDO::FETCH_ASSOC) ?: []) : [];
+} catch (PDOException $exception) {
+    error_log('Frontend menu query failed: ' . $exception->getMessage());
+    $menuItems = [];
+}
 
 $menuTree = [];
 foreach ($menuItems as $item) {

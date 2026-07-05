@@ -5,8 +5,8 @@ $debug = 'No';
 $devdebug = 'No';
 if($_SERVER['REMOTE_ADDR'] == '82.153.24.226') {$devdebug = 'No';}
 
-// Get database
-include("includes/dbcon.php");
+// Use the same private database bootstrap as the active frontend entry point.
+require_once __DIR__ . '/../../private/dbcon.php';
 
 if (!isset($conn) || !($conn instanceof mysqli)) {
 	http_response_code(500);

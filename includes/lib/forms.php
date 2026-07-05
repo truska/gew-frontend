@@ -8,16 +8,21 @@ require_once __DIR__ . '/spam_rules.php';
 function cms_table_exists(string $table): bool {
   global $pdo, $DB_OK;
 
+  static $cache = [];
+  if (array_key_exists($table, $cache)) {
+    return $cache[$table];
+  }
+
   if (!$DB_OK || !($pdo instanceof PDO)) {
-    return false;
+    return $cache[$table] = false;
   }
 
   try {
     $stmt = $pdo->prepare('SHOW TABLES LIKE :table');
     $stmt->execute([':table' => $table]);
-    return (bool) $stmt->fetchColumn();
+    return $cache[$table] = (bool) $stmt->fetchColumn();
   } catch (PDOException $e) {
-    return false;
+    return $cache[$table] = false;
   }
 }
 

@@ -105,6 +105,11 @@ $GLOBALS['cms_content_debug'] = [];
       echo '</div>';
       continue;
     }
+    if ($layoutFile === 'contact.php') {
+      include __DIR__ . '/layouts/contact.php';
+      echo '</div>';
+      continue;
+    }
     if ($layoutFile === 'content-standard-image-text.php') {
       include __DIR__ . '/layouts/content-standard-image-text.php';
       echo '</div>';

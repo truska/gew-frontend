@@ -3,7 +3,7 @@
  * Front-end image helpers for content/gallery rendering.
  */
 
-require_once __DIR__ . '/../../wccms/includes/lib/cms_media.php';
+require_once __DIR__ . '/cms_media_frontend.php';
 
 function cms_content_table_exists(string $table): bool {
   global $pdo, $DB_OK;

@@ -2,7 +2,7 @@
 <?php
 require_once __DIR__ . '/lib/cms_log.php';
 require_once __DIR__ . '/lib/forms.php';
-require_once __DIR__ . '/../wccms/includes/email.php';
+require_once __DIR__ . '/lib/cms_mail.php';
 
 $contactSlug = $rowpage['slug'] ?? 'contact';
 $baseURL = $baseURL ?? cms_base_url();
