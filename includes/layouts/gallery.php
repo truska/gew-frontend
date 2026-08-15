@@ -17,6 +17,7 @@ $galleryShowHeading = (string) ($contentItem['showheading']
   ?? $contentItem['showhearder']
   ?? 'Yes');
 $galleryHeadingTag = ($galleryShowHeading === 'Yes' && $galleryHeading !== '') ? cms_page_heading_tag() : '';
+$magicGalleryId = 'project-gallery-' . (int) ($contentItem['id'] ?? 0);
 $projectGalleryImages = [];
 
 if (!empty($DB_OK) && $pdo instanceof PDO && cms_content_table_exists('gallery')) {
@@ -56,12 +57,11 @@ if (!empty($DB_OK) && $pdo instanceof PDO && cms_content_table_exists('gallery')
     $mediaType = $mediaType !== '' ? $mediaType : 'images';
     $folder = $folder !== '' ? $folder : 'content';
 
-    $displayUrl = cms_content_pick_image_url($mediaType, $folder, $filename, ['lg', 'md', 'sm', 'xs', '']);
+    $displayUrl = cms_content_pick_image_url($mediaType, $folder, $filename, ['sm']);
     if ($displayUrl === '') {
       continue;
     }
-    $zoomUrl = cms_content_pick_image_url($mediaType, $folder, $filename, ['xl', 'master', 'lg', 'md', '']);
-    $srcset = cms_content_image_srcset($mediaType, $folder, $filename);
+    $zoomUrl = cms_content_pick_image_url($mediaType, $folder, $filename, ['lg']);
     $caption = trim((string) ($galleryRow['caption'] ?? ''));
     $title = trim((string) ($galleryRow['title'] ?? ''));
     $alt = trim((string) ($galleryRow['alttag'] ?? ''));
@@ -72,7 +72,6 @@ if (!empty($DB_OK) && $pdo instanceof PDO && cms_content_table_exists('gallery')
     $projectGalleryImages[] = [
       'display' => $displayUrl,
       'zoom' => $zoomUrl !== '' ? $zoomUrl : $displayUrl,
-      'srcset' => $srcset,
       'caption' => $caption,
       'title' => $title,
       'alt' => $alt,
@@ -94,21 +93,18 @@ if (!empty($DB_OK) && $pdo instanceof PDO && cms_content_table_exists('gallery')
       <div class="project-gallery-grid" role="list">
         <?php foreach ($projectGalleryImages as $galleryIndex => $galleryImage):
           $imageTitle = $galleryImage['title'] !== '' ? $galleryImage['title'] : $galleryImage['caption'];
-          $imageSrcset = $galleryImage['srcset'] !== ''
-            ? ' srcset="' . cms_h($galleryImage['srcset']) . '" sizes="(max-width: 767px) 100vw, (max-width: 1199px) 50vw, 33vw"'
-            : '';
         ?>
           <figure class="project-gallery-item" role="listitem">
             <a class="MagicZoomPlus project-gallery-image" href="<?php echo cms_h($galleryImage['zoom']); ?>"
+              data-gallery="<?php echo cms_h($magicGalleryId); ?>"
               data-options="zoomMode: off; expand: true; expandZoomMode: zoom"
               data-caption="<?php echo cms_h($galleryImage['caption']); ?>"
               title="<?php echo cms_h($imageTitle); ?>">
-              <img src="<?php echo cms_h($galleryImage['display']); ?>"<?php echo $imageSrcset; ?>
-                alt="<?php echo cms_h($galleryImage['alt']); ?>" loading="<?php echo $galleryIndex < 2 ? 'eager' : 'lazy'; ?>" decoding="async">
+              <img src="<?php echo cms_h($galleryImage['display']); ?>"
+                alt="<?php echo cms_h($galleryImage['alt']); ?>" class="img-fluid w-100"
+                loading="<?php echo $galleryIndex < 2 ? 'eager' : 'lazy'; ?>" decoding="async">
             </a>
-            <?php if ($galleryImage['caption'] !== ''): ?>
-              <figcaption><?php echo cms_h($galleryImage['caption']); ?></figcaption>
-            <?php endif; ?>
+            <figcaption<?php echo $galleryImage['caption'] === '' ? ' aria-hidden="true"' : ''; ?>><?php echo $galleryImage['caption'] !== '' ? cms_h($galleryImage['caption']) : '&nbsp;'; ?></figcaption>
           </figure>
         <?php endforeach; ?>
       </div>
