@@ -160,6 +160,19 @@ body { color: var(--color-text); font-family: 'Montserrat', Arial, sans-serif; l
 .standard-image-thumbnail-rail a:hover,
 .standard-image-thumbnail-rail a:focus-visible { border-color: var(--color-primary); opacity: .9; transform: translateX(-2px); }
 .standard-image-thumbnail-rail img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.project-gallery-intro { max-width: 760px; margin: 0 auto clamp(2rem, 5vw, 4rem); text-align: center; }
+.project-gallery-intro .lead { margin-right: auto; margin-left: auto; }
+.project-gallery-intro .content-copy > :last-child { margin-bottom: 0; }
+.project-gallery-grid { columns: 3; column-gap: clamp(1rem, 2.2vw, 2rem); }
+.project-gallery-item { position: relative; display: inline-block; width: 100%; margin: 0 0 clamp(1rem, 2.2vw, 2rem); overflow: hidden; border-radius: .65rem; background: #fff; box-shadow: 0 8px 24px rgba(51, 71, 79, .14); break-inside: avoid; }
+.project-gallery-image { display: block; overflow: hidden; background: rgba(97, 129, 142, .1); }
+.project-gallery-image > img { display: block; width: 100%; height: auto; transition: transform .35s ease; }
+.project-gallery-item:hover .project-gallery-image > img { transform: scale(1.025); }
+.project-gallery-item figcaption { padding: .9rem 1rem 1rem; border-top: 3px solid var(--color-secondary); color: var(--color-text); font-size: .95rem; line-height: 1.55; }
+.project-gallery-empty { margin: 2rem 0; padding: 2.5rem; border-radius: .65rem; background: var(--color-pale); text-align: center; }
+@media (max-width: 991.98px) { .project-gallery-grid { columns: 2; } }
+@media (max-width: 575.98px) { .project-gallery-grid { columns: 1; } }
+@media (prefers-reduced-motion: reduce) { .project-gallery-image > img { transition: none; } }
 .standard-image-gallery[data-image-count="2"] .standard-image-thumbnail-rail,
 .standard-image-gallery[data-image-count="3"] .standard-image-thumbnail-rail,
 .standard-image-gallery[data-image-count="4"] .standard-image-thumbnail-rail { align-content: center; grid-auto-rows: minmax(92px, 1fr); }

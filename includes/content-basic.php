@@ -120,6 +120,11 @@ $GLOBALS['cms_content_debug'] = [];
       echo '</div>';
       continue;
     }
+    if ($layoutFile === 'gallery.php') {
+      include __DIR__ . '/layouts/gallery.php';
+      echo '</div>';
+      continue;
+    }
     $heading = trim((string) ($contentItem['heading'] ?? ''));
     $subheading = trim((string) ($contentItem['subheading'] ?? ''));
     $body = cms_apply_shortcodes((string) ($contentItem['text'] ?? ''));
