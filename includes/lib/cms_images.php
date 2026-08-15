@@ -348,6 +348,11 @@ function cms_content_gallery_images(array $contentItem, array $options = []): ar
     if ($display === '') {
       $display = cms_content_no_image_url($mediatype, $folder, 'md');
     }
+    // Do not let a stale gallery row suppress the record's valid single-image
+    // fallback. An unresolved item would otherwise render empty src/href values.
+    if ($display === '') {
+      continue;
+    }
     if ($zoom === '') {
       $zoom = $display;
     }

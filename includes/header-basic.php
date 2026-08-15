@@ -24,6 +24,9 @@ if (file_exists($cmsImagesPath)) {
 <head>
   <?php include __DIR__ . '/metadata.php'; ?>
   <?php include __DIR__ . '/google.php'; ?>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,200;0,400;0,600;0,700;0,900;1,200;1,400;1,600;1,700;1,900&display=swap" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/<?php echo rawurlencode($fontAwesomeVersion); ?>/css/all.min.css">
   <link rel="stylesheet" href="<?php echo cms_h($baseURL); ?>/css/gew-basic.css?v=<?php echo filemtime(__DIR__ . '/../css/gew-basic.css'); ?>">
@@ -36,7 +39,7 @@ if (file_exists($cmsImagesPath)) {
 </head>
 <body>
 <?php if ($isDevelopmentSite): ?>
-  <div class="development-site-banner" role="status" style="width:100%;padding:7px 16px;background:#c40000;color:#fff;font-size:24px;font-weight:700;line-height:1.25;text-align:center;">DEVELOPMENT SITE</div>
+  <div class="development-site-banner" role="status" style="width:100%;padding:7px 16px;background:#c40000;color:#fff;font-size:24px;font-weight:700;line-height:1.25;text-align:center;">*** DEVELOPMENT SITE ***</div>
 <?php endif; ?>
 <header class="site-header">
   <div class="container header-top">

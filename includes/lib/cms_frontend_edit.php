@@ -208,6 +208,27 @@ function cms_frontend_edit_resolve_form_id_for_table(string $tableName): int {
   return 0;
 }
 
+function cms_frontend_edit_button_title(array $contentItem, array $options, int $recordId): string {
+  $title = trim((string) ($options["title"] ?? "Edit this content in WCCMS"));
+  if ($title === "") {
+    $title = "Edit this content in WCCMS";
+  }
+
+  if ($recordId <= 0 || preg_match("/\bid\s*:/i", $title)) {
+    return $title;
+  }
+
+  if (preg_match("/^Edit(?: this)? (.+) in WCCMS$/i", $title, $matches)) {
+    return "Edit " . trim((string) $matches[1]) . " id: " . $recordId . " in WCCMS";
+  }
+
+  if (preg_match("/ in WCCMS$/i", $title)) {
+    return preg_replace("/ in WCCMS$/i", " id: " . $recordId . " in WCCMS", $title) ?: $title;
+  }
+
+  return $title . " id: " . $recordId;
+}
+
 function cms_render_frontend_edit_button(array $contentItem, array $options = []): string {
   if (!cms_frontend_edit_allowed()) {
     return '';
@@ -225,10 +246,7 @@ function cms_render_frontend_edit_button(array $contentItem, array $options = []
     $label = 'Edit';
   }
 
-  $title = trim((string) ($options['title'] ?? 'Edit this content in WCCMS'));
-  if ($title === '') {
-    $title = 'Edit this content in WCCMS';
-  }
+  $title = cms_frontend_edit_button_title($contentItem, $options, $recordId);
 
   $extraClass = trim((string) ($options['class'] ?? ''));
   $classes = 'cms-frontend-edit-button';

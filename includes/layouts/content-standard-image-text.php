@@ -54,11 +54,34 @@ foreach ($galleryImages as &$galleryImage) {
 }
 unset($galleryImage);
 $hasGallery = count($galleryImages) > 0;
+$portraitImages = 0;
+$landscapeImages = 0;
+foreach ($galleryImages as $galleryImage) {
+  $mediaType = (string) ($galleryImage['mediatype'] ?? 'images');
+  $folder = (string) ($galleryImage['folder'] ?? 'content');
+  $filename = (string) ($galleryImage['filename'] ?? '');
+  foreach (['md', 'lg', 'master', ''] as $size) {
+    $imagePath = cms_media_path($mediaType, $folder, $size) . $filename;
+    if (!is_file($imagePath)) {
+      continue;
+    }
+    $dimensions = @getimagesize($imagePath);
+    if (is_array($dimensions)) {
+      if ((int) $dimensions[1] > (int) $dimensions[0]) {
+        $portraitImages++;
+      } elseif ((int) $dimensions[0] > (int) $dimensions[1]) {
+        $landscapeImages++;
+      }
+    }
+    break;
+  }
+}
+$portraitGallery = $portraitImages > $landscapeImages;
 $hasBody2 = trim(strip_tags($body2)) !== '';
 $imagePosition = strtolower(trim((string) ($contentItem['imageposition'] ?? 'left')));
 $imageOnRight = $imagePosition === 'right';
 
-$renderGallery = static function (array $images, array $item): string {
+$renderGallery = static function (array $images, array $item, bool $portrait = false): string {
   $id = 'standard-gallery-' . (int) ($item['id'] ?? 0);
   $defaultAlt = trim((string) ($item['heading'] ?? ''));
   $main = $images[0];
@@ -70,23 +93,34 @@ $renderGallery = static function (array $images, array $item): string {
     : '';
   $options = 'zoomMode: off; expand: true; expandZoomMode: zoom';
 
-  $html = '<figure class="standard-image-gallery mb-0">';
+  $galleryClass = 'standard-image-gallery mb-0' . ($portrait ? ' standard-image-gallery-portrait' : ' standard-image-gallery-landscape');
+  $html = '<figure class="' . $galleryClass . '" data-image-count="' . count($images) . '">';
+  if ($portrait) {
+    $visibleCount = min(6, max(1, count($images)));
+    $html .= '<div class="standard-image-gallery-frame" style="--gallery-visible-count:' . $visibleCount . '">';
+  }
   $html .= '<a id="' . cms_h($id) . '" class="MagicZoomPlus" href="' . cms_h($main['zoom']) . '"'
     . ' data-options="' . cms_h($options) . '" data-caption="' . cms_h($mainCaption) . '" title="' . cms_h($mainTitle) . '">';
   $html .= '<img src="' . cms_h($main['display']) . '" alt="' . cms_h($mainAlt) . '" title="' . cms_h($mainTitle) . '" class="img-fluid w-100"' . $srcset . '>';
   $html .= '</a>';
 
   if (count($images) > 1) {
-    $html .= '<div class="row g-2 mt-2 standard-image-thumbnails">';
+    $html .= $portrait
+      ? '<div class="standard-image-thumbnails standard-image-thumbnail-rail" role="list" aria-label="Gallery images">'
+      : '<div class="row g-2 mt-2 standard-image-thumbnails" role="list" aria-label="Gallery images">';
     foreach ($images as $image) {
       $alt = $image['alt'] !== '' ? $image['alt'] : $defaultAlt;
       $title = trim((string) ($image['title'] ?? $image['caption'] ?? ''));
       $caption = trim((string) ($image['caption'] ?? $image['title'] ?? ''));
-      $html .= '<div class="col-4"><a data-zoom-id="' . cms_h($id) . '" href="' . cms_h($image['zoom']) . '"'
+      $html .= $portrait ? '<div class="standard-image-thumbnail" role="listitem">' : '<div class="col-4" role="listitem">';
+      $html .= '<a data-zoom-id="' . cms_h($id) . '" href="' . cms_h($image['zoom']) . '"'
         . ' data-image="' . cms_h($image['display']) . '" data-caption="' . cms_h($caption) . '" title="' . cms_h($title) . '">';
       $html .= '<img src="' . cms_h($image['thumb']) . '" alt="' . cms_h($alt) . '" title="' . cms_h($title) . '" class="img-fluid w-100">';
       $html .= '</a></div>';
     }
+    $html .= '</div>';
+  }
+  if ($portrait) {
     $html .= '</div>';
   }
 
@@ -110,10 +144,10 @@ $renderGallery = static function (array $images, array $item): string {
 
     <?php if ($hasGallery): ?>
       <div class="row g-5 align-items-start">
-        <div class="col-12 col-lg-6<?php echo $imageOnRight ? ' order-lg-2' : ''; ?>">
-          <?php echo $renderGallery($galleryImages, $contentItem); ?>
+        <div class="col-12 <?php echo $portraitGallery ? 'col-lg-7' : 'col-lg-6'; ?><?php echo $imageOnRight ? ' order-lg-2' : ''; ?>">
+          <?php echo $renderGallery($galleryImages, $contentItem, $portraitGallery); ?>
         </div>
-        <div class="col-12 col-lg-6<?php echo $imageOnRight ? ' order-lg-1' : ''; ?>">
+        <div class="col-12 <?php echo $portraitGallery ? 'col-lg-5' : 'col-lg-6'; ?><?php echo $imageOnRight ? ' order-lg-1' : ''; ?>">
           <?php if ($body !== ''): ?><div class="content-copy"><?php echo $body; ?></div><?php endif; ?>
           <?php echo $contentActions; ?>
         </div>

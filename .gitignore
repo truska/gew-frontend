@@ -1,0 +1,16 @@
+# Exclude non-frontend deploy content
+filestore/
+wccms/
+stats/
+error/
+
+# Exclude root/system files managed by the host
+.htaccess
+inside.php
+truska.php
+
+# Optional local noise
+*.log
+.DS_Store
+*.code-workspace
+tools/sort-codex

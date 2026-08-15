@@ -15,7 +15,7 @@
 
 body {
     /*margin-top: 99px;*/
-    font-family: 'Lato', sans-serif;
+    font-family: 'Montserrat', Arial, sans-serif;
     font-weight: 400;
     line-height: 0;
     background:var(--color-surface);
@@ -47,7 +47,7 @@ h1, h2, h3, h4, h5, h6 {
     line-height: normal;
 } 
 h1 {
-    font-family: 'Lato', sans-serif;
+    font-family: 'Montserrat', Arial, sans-serif;
     font-weight: 700;
     color: var(--color-ink);
 }
@@ -574,7 +574,7 @@ li.toplevel:first-child {
 }
 
 .productpage h1 {
-    font-family: 'Lato', sans-serif;
+    font-family: 'Montserrat', Arial, sans-serif;
     font-weight: 700;
     color: var(--color-ink);
 }
@@ -728,7 +728,7 @@ footer a:active {
     margin-top: 30px;
 }
 .inner-contact.productpage h1 {
-    font-family: 'Lato', sans-serif;
+    font-family: 'Montserrat', Arial, sans-serif;
     font-weight: 700;
     color: var(--color-ink);
 }
