@@ -119,9 +119,9 @@ if (isset($pdo) && $pdo instanceof PDO) {
     <div class="container footer-bottom-inner">
       <div class="footer-legal">
         <span>&copy; <?php echo date('Y'); ?> <?php echo cms_h((string) cms_pref('prefCompanyName', 'Green Energy Wind')); ?></span>
-        <span aria-hidden="true">|</span><a href="/privacy">Privacy</a>
-        <span aria-hidden="true">|</span><a href="/terms-and-conditions">T&amp;Cs</a>
-        <span aria-hidden="true">|</span><a href="/gdpr">GDPR</a>
+        <span aria-hidden="true">|</span><a href="/privacy">Privacy & Data Protection</a>
+        <span aria-hidden="true">|</span><a href="/terms-and-conditions">Website Terms</a>
+        <!--<span aria-hidden="true">|</span><a href="/gdpr">GDPR</a> -->
         <span aria-hidden="true">|</span><a href="/cookies">Cookies</a>
         <span aria-hidden="true">|</span><button type="button" class="footer-cookie-settings" id="cookieSettingsButton">Cookie settings</button>
       </div>
@@ -131,44 +131,44 @@ if (isset($pdo) && $pdo instanceof PDO) {
 </footer>
 
 <?php
-$footerDebugLoggedIn = function_exists('cms_is_logged_in')
-  ? cms_is_logged_in()
-  : !empty($_SESSION['cms_user']);
+  $footerDebugLoggedIn = function_exists('cms_is_logged_in')
+    ? cms_is_logged_in()
+    : !empty($_SESSION['cms_user']);
 
-$footerDebugIp = function_exists('cms_frontend_edit_first_ip_value')
-  ? cms_frontend_edit_first_ip_value((string) ($_SERVER['HTTP_CF_CONNECTING_IP'] ?? ''))
-  : trim((string) ($_SERVER['HTTP_CF_CONNECTING_IP'] ?? ''));
-if ($footerDebugIp === '') {
   $footerDebugIp = function_exists('cms_frontend_edit_first_ip_value')
-    ? cms_frontend_edit_first_ip_value((string) ($_SERVER['HTTP_X_FORWARDED_FOR'] ?? ''))
-    : trim((string) explode(',', (string) ($_SERVER['HTTP_X_FORWARDED_FOR'] ?? ''))[0]);
-}
-if ($footerDebugIp === '') {
-  $footerDebugIp = (string) ($_SERVER['REMOTE_ADDR'] ?? '');
-}
-
-$footerDebugAllowedIps = [];
-foreach (['prefAllowedIPs', 'prefAllowedIP', 'prefTruskaIP', 'prefCoderIP', 'prefClientIP', 'prefClient1IP'] as $preferenceName) {
-  $preferenceValue = trim((string) cms_pref($preferenceName, ''));
-  if ($preferenceValue === '') {
-    continue;
+    ? cms_frontend_edit_first_ip_value((string) ($_SERVER['HTTP_CF_CONNECTING_IP'] ?? ''))
+    : trim((string) ($_SERVER['HTTP_CF_CONNECTING_IP'] ?? ''));
+  if ($footerDebugIp === '') {
+    $footerDebugIp = function_exists('cms_frontend_edit_first_ip_value')
+      ? cms_frontend_edit_first_ip_value((string) ($_SERVER['HTTP_X_FORWARDED_FOR'] ?? ''))
+      : trim((string) explode(',', (string) ($_SERVER['HTTP_X_FORWARDED_FOR'] ?? ''))[0]);
   }
-  foreach (preg_split('/[\s,;]+/', $preferenceValue, -1, PREG_SPLIT_NO_EMPTY) ?: [] as $allowedIp) {
-    $footerDebugAllowedIps[] = trim((string) $allowedIp);
+  if ($footerDebugIp === '') {
+    $footerDebugIp = (string) ($_SERVER['REMOTE_ADDR'] ?? '');
   }
-}
 
-$footerDebugIpAllowed = $footerDebugIp !== '' && in_array($footerDebugIp, array_unique($footerDebugAllowedIps), true);
-if ($footerDebugLoggedIn && $footerDebugIpAllowed) {
-  include __DIR__ . '/footer-debug.php';
-}
+  $footerDebugAllowedIps = [];
+  foreach (['prefAllowedIPs', 'prefAllowedIP', 'prefTruskaIP', 'prefCoderIP', 'prefClientIP', 'prefClient1IP'] as $preferenceName) {
+    $preferenceValue = trim((string) cms_pref($preferenceName, ''));
+    if ($preferenceValue === '') {
+      continue;
+    }
+    foreach (preg_split('/[\s,;]+/', $preferenceValue, -1, PREG_SPLIT_NO_EMPTY) ?: [] as $allowedIp) {
+      $footerDebugAllowedIps[] = trim((string) $allowedIp);
+    }
+  }
+
+  $footerDebugIpAllowed = $footerDebugIp !== '' && in_array($footerDebugIp, array_unique($footerDebugAllowedIps), true);
+  if ($footerDebugLoggedIn && $footerDebugIpAllowed) {
+    include __DIR__ . '/footer-debug.php';
+  }
 ?>
 
 <?php
-$cookieConsentVersion = 2;
-$cookieConsentStored = json_decode((string) ($_COOKIE['gew_cookie_consent'] ?? ''), true);
-$cookieConsentPending = !is_array($cookieConsentStored)
-  || (int) ($cookieConsentStored['version'] ?? 0) !== $cookieConsentVersion;
+  $cookieConsentVersion = 2;
+  $cookieConsentStored = json_decode((string) ($_COOKIE['gew_cookie_consent'] ?? ''), true);
+  $cookieConsentPending = !is_array($cookieConsentStored)
+    || (int) ($cookieConsentStored['version'] ?? 0) !== $cookieConsentVersion;
 ?>
 <aside
   class="cookie-tool"
@@ -197,10 +197,10 @@ $cookieConsentPending = !is_array($cookieConsentStored)
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>
 <?php
-$cookieConsentScript = __DIR__ . '/../js/cookie-consent.js';
-if (is_readable($cookieConsentScript)) {
-  readfile($cookieConsentScript);
-}
+  $cookieConsentScript = __DIR__ . '/../js/cookie-consent.js';
+  if (is_readable($cookieConsentScript)) {
+    readfile($cookieConsentScript);
+  }
 ?>
 </script>
 <?php $announcementScriptVersion = @filemtime(__DIR__ . '/../js/announcement.js') ?: 1; ?>

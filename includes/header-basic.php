@@ -1,6 +1,7 @@
 <?php
 $baseURL = cms_base_url();
 $logo = trim((string) cms_pref('prefLogo', 'green-energy-wind-logo.jpg'));
+$tagline = trim((string) cms_pref('prefTagLine', ''));
 $telephone = cms_tel_data('prefTel1', 'prefTelIntCode', '');
 $email = trim((string) cms_pref('prefEmail', ''));
 $requestHost = strtolower((string) ($_SERVER['HTTP_HOST'] ?? $_SERVER['SERVER_NAME'] ?? ''));
@@ -43,17 +44,17 @@ if (file_exists($cmsImagesPath)) {
 <?php endif; ?>
 <header class="site-header">
   <div class="container header-top">
-    <div class="row align-items-center gx-3 gy-lg-3 w-100">
-      <div class="col-12 col-lg-4 text-center text-lg-start">
+    <div class="header-grid">
+      <div class="header-logo text-center text-lg-start">
         <a href="/" class="brand">
           <img src="/filestore/images/logos/<?php echo rawurlencode($logo); ?>" alt="<?php echo cms_h((string) cms_pref('prefSiteName', 'Green Energy Wind')); ?>">
         </a>
       </div>
-      <div class="d-none d-lg-flex col-lg-4 affiliate-logos justify-content-center" aria-label="Affiliated organisations">
+      <div class="d-none d-lg-flex affiliate-logos justify-content-center" aria-label="Affiliated organisations">
         <img src="/filestore/images/logos/affiliate-placeholder.svg" alt="Affiliate logo placeholder">
         <img src="/filestore/images/logos/affiliate-placeholder.svg" alt="Affiliate logo placeholder">
       </div>
-      <div class="d-none d-lg-block col-lg-4">
+      <div class="d-none d-lg-block header-contact">
         <div class="contact-details">
           <?php if ($telephone['display'] !== ''): ?>
             <a href="tel:<?php echo cms_h($telephone['dial']); ?>" aria-label="Telephone <?php echo cms_h($telephone['display']); ?>"><i class="fa-solid fa-phone" aria-hidden="true"></i><span><?php echo cms_h($telephone['display']); ?></span></a>
@@ -64,6 +65,9 @@ if (file_exists($cmsImagesPath)) {
           <a href="/contact-itfix" class="contact-cta" aria-label="Contact us"><i class="fa-solid fa-paper-plane" aria-hidden="true"></i><span>Contact us</span></a>
         </div>
       </div>
+      <?php if ($tagline !== ''): ?>
+        <p class="header-tagline"><?php echo cms_h($tagline); ?></p>
+      <?php endif; ?>
     </div>
   </div>
   <nav class="navbar navbar-expand-lg" aria-label="Main navigation">

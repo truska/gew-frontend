@@ -35,16 +35,25 @@ body { color: var(--color-text); font-family: 'Montserrat', Arial, sans-serif; l
 }
 .site-header { background: #fff; border-bottom: 1px solid #dce6df; }
 .header-top { padding-top: 1rem; padding-bottom: 1rem; }
+.header-grid { display: grid; gap: .75rem 1rem; }
 .brand { display: inline-block; }
 .brand img { display: block; width: auto; height: auto; max-width: 100%; max-height: 110px; }
 .affiliate-logos { align-items: center; gap: 1rem; }
 .affiliate-logos img { width: 84px; height: 84px; object-fit: contain; }
+.header-tagline { margin: 0; color: var(--color-neutral); font-size: clamp(1rem, 1.8vw, 1.35rem); font-weight: 600; line-height: 1.35; text-align: center; }
 .contact-details { display: flex; flex-direction: column; align-items: flex-end; gap: .35rem; }
 .contact-details a { display: inline-flex; align-items: center; gap: .65rem; color: var(--color-primary); font-weight: 600; text-decoration: none; }
 .contact-details a:hover, .contact-details a:focus { color: var(--color-secondary); }
 .contact-details i { width: 1.15rem; text-align: center; }
 .contact-details .contact-cta { margin-top: .35rem; padding: .55rem 1rem; border: 2px solid var(--color-primary); border-radius: .35rem; }
 .contact-details .contact-cta:hover, .contact-details .contact-cta:focus { border-color: var(--color-secondary); }
+@media (min-width: 992px) {
+  .header-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); align-items: center; }
+  .header-logo { grid-column: 1; grid-row: 1; }
+  .affiliate-logos { grid-column: 2; grid-row: 1; }
+  .header-contact { grid-column: 3; grid-row: 1; }
+  .header-tagline { grid-column: 1 / span 3; grid-row: 2; }
+}
 .navbar { background: var(--color-primary); padding: 0; }
 .navbar .nav-link { color: #fff; padding: 1rem 1.15rem !important; }
 .navbar .nav-link:hover, .navbar .nav-link:focus { background: var(--color-secondary); color: var(--color-text); }
