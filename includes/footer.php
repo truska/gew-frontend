@@ -154,7 +154,9 @@
                             $copyrightYears = $copyrightStartYear . " - " . $copyrightCurrentYear;
                         }
                         ?>
-                        <p class="footerimprint">&copy; Copyright <?php echo $copyrightYears . " " . getCompanyName($cmsPrefs) ; ?><br><a href='<?php echo $baseURL ;?>/privacy' target='_blank'>Privacy</a> | <a href='<?php echo $baseURL ;?>/site-policy' target='_blank'>T&Cs</a><br>...</p>
+                        <p class="footerimprint">&copy; Copyright <?php echo $copyrightYears . " " . getCompanyName($cmsPrefs) ; ?><br>
+                        <a href='<?php echo $baseURL ;?>/privacy' target='_blank'>Privacy</a> | 
+                        <a href='<?php echo $baseURL ;?>/site-policy' target='_blank'>T&Cs</a><br>...</p>
                     </div>
                     <div class="col-sm-6 footerimprint">
                         <p style="text-align: right">&nbsp;<br><a href='https://digita.agency' target='_blank'>website design, build and hosting by digita.agency</a></p>

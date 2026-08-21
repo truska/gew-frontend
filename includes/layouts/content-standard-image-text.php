@@ -39,18 +39,29 @@ foreach ($galleryImages as &$galleryImage) {
     continue;
   }
 
-  $largeUrl = cms_content_pick_image_url($mediaType, $folder, $filename, ['lg']);
-  $mediumUrl = cms_content_pick_image_url($mediaType, $folder, $filename, ['md']);
-  if ($largeUrl !== '') {
-    $galleryImage['thumb'] = $largeUrl;
-    $galleryImage['zoom'] = $largeUrl;
-  }
-  // Until resized derivatives exist, keep the page image working from /lg/.
-  if ($mediumUrl !== '') {
-    $galleryImage['display'] = $mediumUrl;
-  } elseif ($largeUrl !== '') {
-    $galleryImage['display'] = $largeUrl;
-  }
+  // Keep each gallery role tied to its intended derivative. In particular,
+  // do not attach the generic srcset here: its breakpoint labels describe
+  // viewport widths rather than the real derivative widths and can make the
+  // browser choose the 300px /sm/ file for the initial featured image.
+  $galleryImage['thumb'] = cms_content_pick_image_url(
+    $mediaType,
+    $folder,
+    $filename,
+    ['sm', 'xs', 'md', 'lg']
+  );
+  $galleryImage['display'] = cms_content_pick_image_url(
+    $mediaType,
+    $folder,
+    $filename,
+    ['md', 'lg', 'sm', 'xs']
+  );
+  $galleryImage['zoom'] = cms_content_pick_image_url(
+    $mediaType,
+    $folder,
+    $filename,
+    ['lg', 'master', 'md', 'sm']
+  );
+  $galleryImage['srcset'] = '';
 }
 unset($galleryImage);
 $hasGallery = count($galleryImages) > 0;
