@@ -34,7 +34,9 @@ $GLOBALS['cms_content_debug'] = [];
 ?>
 <main>
 <?php if (!$pageContentItems): ?>
-  <section class="content-block"><div class="container"><h1 class="page-layout-heading"><?php echo cms_h((string) ($pageData['name'] ?? '')); ?></h1></div></section>
+  <?php if (empty($holdingPageActive)): ?>
+    <section class="content-block"><div class="container"><h1 class="page-layout-heading"><?php echo cms_h((string) ($pageData['name'] ?? '')); ?></h1></div></section>
+  <?php endif; ?>
 <?php else: ?>
   <?php foreach ($pageContentItems as $index => $contentItem):
     $layoutFile = basename((string) ($contentItem['layout_url'] ?? ''));

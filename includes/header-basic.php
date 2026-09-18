@@ -50,10 +50,12 @@ if (file_exists($cmsImagesPath)) {
           <img src="/filestore/images/logos/<?php echo rawurlencode($logo); ?>" alt="<?php echo cms_h((string) cms_pref('prefSiteName', 'Green Energy Wind')); ?>">
         </a>
       </div>
-      <div class="d-none d-lg-flex affiliate-logos justify-content-center" aria-label="Affiliated organisations">
-        <img src="/filestore/images/logos/affiliate-placeholder.svg" alt="Affiliate logo placeholder">
-        <img src="/filestore/images/logos/affiliate-placeholder.svg" alt="Affiliate logo placeholder">
-      </div>
+      <?php if (empty($hideAffiliateLogos)): ?>
+        <div class="d-none d-lg-flex affiliate-logos justify-content-center" aria-label="Affiliated organisations">
+          <img src="/filestore/images/logos/affiliate-placeholder.svg" alt="Affiliate logo placeholder">
+          <img src="/filestore/images/logos/affiliate-placeholder.svg" alt="Affiliate logo placeholder">
+        </div>
+      <?php endif; ?>
       <div class="d-none d-lg-block header-contact">
         <div class="contact-details">
           <?php if ($telephone['display'] !== ''): ?>

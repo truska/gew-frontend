@@ -41,14 +41,16 @@ if (isset($pdo) && $pdo instanceof PDO) {
 <footer class="site-footer">
   <div class="container footer-main">
     <div class="row g-4">
-      <div class="col-12 col-sm-6 col-lg-3">
-        <h3 class="footer-heading">Useful links</h3>
-        <ul class="footer-links">
-          <?php foreach (array_slice(array_values($menuTree), 0, 5) as $footerItem): ?>
-            <li><a href="<?php echo cms_h(gew_menu_url($footerItem)); ?>"><?php echo cms_h((string) $footerItem['label']); ?></a></li>
-          <?php endforeach; ?>
-        </ul>
-      </div>
+      <?php if (empty($hideFooterUsefulLinks)): ?>
+        <div class="col-12 col-sm-6 col-lg-3">
+          <h3 class="footer-heading">Useful links</h3>
+          <ul class="footer-links">
+            <?php foreach (array_slice(array_values($menuTree), 0, 5) as $footerItem): ?>
+              <li><a href="<?php echo cms_h(gew_menu_url($footerItem)); ?>"><?php echo cms_h((string) $footerItem['label']); ?></a></li>
+            <?php endforeach; ?>
+          </ul>
+        </div>
+      <?php endif; ?>
       <div class="col-12 col-sm-6 col-lg-3">
         <h3 class="footer-heading">Information</h3>
         <p class="footer-muted">Further information and links will follow.</p>
@@ -77,9 +79,15 @@ if (isset($pdo) && $pdo instanceof PDO) {
           <p class="footer-muted">Social links coming soon.</p>
         <?php endif; ?>
       </div>
+      <?php if (!empty($footerExtraColumnHtml)): ?>
+        <div class="col-12 col-sm-6 col-lg-3 footer-secondary-logo d-flex align-items-end justify-content-lg-end">
+          <?php echo $footerExtraColumnHtml; ?>
+        </div>
+      <?php endif; ?>
     </div>
   </div>
 
+  <?php if (empty($hideFooterFeature)): ?>
   <div class="footer-feature">
     <div class="container">
       <div class="row align-items-center g-4">
@@ -114,16 +122,19 @@ if (isset($pdo) && $pdo instanceof PDO) {
       </div>
     </div>
   </div>
+  <?php endif; ?>
 
   <div class="footer-bottom">
     <div class="container footer-bottom-inner">
       <div class="footer-legal">
         <span>&copy; <?php echo date('Y'); ?> <?php echo cms_h((string) cms_pref('prefCompanyName', 'Green Energy Wind')); ?></span>
-        <span aria-hidden="true">|</span><a href="/privacy">Privacy & Data Protection</a>
-        <span aria-hidden="true">|</span><a href="/terms-and-conditions">Website Terms</a>
-        <!--<span aria-hidden="true">|</span><a href="/gdpr">GDPR</a> -->
-        <span aria-hidden="true">|</span><a href="/cookies">Cookies</a>
-        <span aria-hidden="true">|</span><button type="button" class="footer-cookie-settings" id="cookieSettingsButton">Cookie settings</button>
+        <?php if (empty($hideFooterLegalLinks)): ?>
+          <span aria-hidden="true">|</span><a href="/privacy">Privacy & Data Protection</a>
+          <span aria-hidden="true">|</span><a href="/terms-and-conditions">Website Terms</a>
+          <!--<span aria-hidden="true">|</span><a href="/gdpr">GDPR</a> -->
+          <span aria-hidden="true">|</span><a href="/cookies">Cookies</a>
+          <span aria-hidden="true">|</span><button type="button" class="footer-cookie-settings" id="cookieSettingsButton">Cookie settings</button>
+        <?php endif; ?>
       </div>
       <div class="footer-credit">Site design and hosting by <a href="https://truska.com" target="_blank" rel="noopener">truska.com</a></div>
     </div>

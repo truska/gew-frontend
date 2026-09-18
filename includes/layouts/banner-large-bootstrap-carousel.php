@@ -20,14 +20,23 @@ $bannerSlides = [
     'alt' => 'Renewable wind energy',
   ],
 ];
+
+// Holding mode keeps the current banner layout, but exposes only its first
+// image to public visitors. Logged-in CMS users retain the complete carousel.
+if (!empty($holdingPageActive)) {
+  $bannerSlides = array_slice($bannerSlides, 0, 1);
+}
+$bannerHasMultipleSlides = count($bannerSlides) > 1;
 ?>
 <section class="home-banner" aria-label="Green Energy Wind highlights">
-  <div id="homeBannerCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="6000">
+  <div id="homeBannerCarousel" class="carousel slide"<?php if ($bannerHasMultipleSlides): ?> data-bs-ride="carousel" data-bs-interval="6000"<?php endif; ?>>
+    <?php if ($bannerHasMultipleSlides): ?>
     <div class="carousel-indicators">
       <?php foreach ($bannerSlides as $index => $slide): ?>
         <button type="button" data-bs-target="#homeBannerCarousel" data-bs-slide-to="<?php echo $index; ?>" class="<?php echo $index === 0 ? 'active' : ''; ?>"<?php echo $index === 0 ? ' aria-current="true"' : ''; ?> aria-label="Slide <?php echo $index + 1; ?>"></button>
       <?php endforeach; ?>
     </div>
+    <?php endif; ?>
     <div class="carousel-inner">
       <?php foreach ($bannerSlides as $index => $slide): ?>
         <div class="carousel-item<?php echo $index === 0 ? ' active' : ''; ?>">
@@ -35,13 +44,15 @@ $bannerSlides = [
         </div>
       <?php endforeach; ?>
     </div>
-    <button class="carousel-control-prev" type="button" data-bs-target="#homeBannerCarousel" data-bs-slide="prev">
-      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-      <span class="visually-hidden">Previous</span>
-    </button>
-    <button class="carousel-control-next" type="button" data-bs-target="#homeBannerCarousel" data-bs-slide="next">
-      <span class="carousel-control-next-icon" aria-hidden="true"></span>
-      <span class="visually-hidden">Next</span>
-    </button>
+    <?php if ($bannerHasMultipleSlides): ?>
+      <button class="carousel-control-prev" type="button" data-bs-target="#homeBannerCarousel" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Previous</span>
+      </button>
+      <button class="carousel-control-next" type="button" data-bs-target="#homeBannerCarousel" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Next</span>
+      </button>
+    <?php endif; ?>
   </div>
 </section>

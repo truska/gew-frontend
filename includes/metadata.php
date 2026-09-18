@@ -76,7 +76,10 @@ $metadataRequestPath = (string) (parse_url((string) ($_SERVER['REQUEST_URI'] ?? 
 $metadataCanonical = $metadataBaseUrl . ($metadataRequestPath === '/' ? '/' : '/' . ltrim($metadataRequestPath, '/'));
 
 $metadataSiteSearchEnabled = strcasecmp($metadataPreference('prefSiteSearchOn', 'Yes'), 'No') !== 0;
-$metadataRobots = $metadataSiteSearchEnabled ? 'index,follow' : 'noindex,nofollow';
+// A temporary holding page should not replace the eventual site in search.
+$metadataRobots = !empty($holdingPageActive)
+    ? 'noindex,nofollow'
+    : ($metadataSiteSearchEnabled ? 'index,follow' : 'noindex,nofollow');
 ?>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">

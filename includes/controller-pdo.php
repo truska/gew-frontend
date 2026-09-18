@@ -15,6 +15,23 @@ $pageContentItems = [];
 $menuItems = [];
 $footerTestimonial = [];
 
+// prefHoldingMode is intentionally opt-in: live sites remain unchanged until
+// the preference is added in CMS Preferences and set to Yes.
+$cmsUserIsLoggedIn = !empty($_SESSION['cms_user']['id']);
+$holdingModeEnabled = strcasecmp((string) cms_pref('prefHoldingMode', 'No'), 'Yes') === 0;
+$holdingPageActive = $holdingModeEnabled && !$cmsUserIsLoggedIn;
+
+// Public visitors may only see the root page while holding mode is enabled.
+// The home rewrite internally sets url=welcome, so use the actual request URI
+// here rather than $requestedPath to avoid redirecting / back to itself.
+$requestUriPath = (string) (parse_url((string) ($_SERVER['REQUEST_URI'] ?? '/'), PHP_URL_PATH) ?: '/');
+$isRootRequest = trim($requestUriPath, '/') === '';
+// Redirect rather than disclose a page title, content, or a useful 404 map.
+if ($holdingPageActive && !$isRootRequest) {
+    header('Location: /', true, 302);
+    exit;
+}
+
 try {
     $pageStatement = $pdo->prepare(
         "SELECT * FROM pages
@@ -40,12 +57,22 @@ if ($frontendUnavailable) {
     $pageMetaDescription = (string) ($pageData['metadescription'] ?? '');
 
     try {
+        $holdingContentFilter = '';
+        if ($holdingPageActive) {
+            // Fail closed if the migration has not yet been applied. This
+            // avoids accidentally showing the work-in-progress homepage.
+            $contentColumns = $pdo->query('SHOW COLUMNS FROM content')->fetchAll(PDO::FETCH_COLUMN);
+            $holdingContentFilter = in_array('showonholding', $contentColumns, true)
+                ? " AND c.showonholding = 'Yes'"
+                : ' AND 1 = 0';
+        }
         $contentStatement = $pdo->prepare(
             "SELECT c.*, l.url AS layout_url, l.name AS layout_name
              FROM content c
              LEFT JOIN layout l ON l.id = c.layout
-             WHERE c.page = :page_id AND c.showonweb = 'Yes' AND c.archived = 0
-             ORDER BY c.sort, c.id"
+             WHERE c.page = :page_id AND c.showonweb = 'Yes' AND c.archived = 0"
+             . $holdingContentFilter .
+            ' ORDER BY c.sort, c.id'
         );
         $contentStatement->execute(['page_id' => (int) $pageData['id']]);
         $pageContentItems = $contentStatement->fetchAll(PDO::FETCH_ASSOC) ?: [];
@@ -55,7 +82,7 @@ if ($frontendUnavailable) {
     }
 }
 
-try {
+if (!$holdingPageActive) try {
     $menuStatement = $pdo->query(
         "SELECT mi.*, p.slug AS page_slug
          FROM menu_items mi
@@ -86,7 +113,7 @@ foreach ($menuItems as $item) {
 }
 
 // Load one footer testimonial while tolerating optional WCCMS columns.
-try {
+if (!$holdingPageActive) try {
     $testimonialColumns = $pdo->query('SHOW COLUMNS FROM testimonials')->fetchAll(PDO::FETCH_COLUMN);
     if ($testimonialColumns) {
         $testimonialWhere = [];
