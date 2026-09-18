@@ -6,6 +6,12 @@
  * explicitly accepted optional cookies through the site consent control.
  */
 
+// The temporary holding page deliberately has no cookie-consent workflow or
+// optional tracking.
+if (!empty($disableCookieConsent)) {
+    return;
+}
+
 $googleAnalyticsEnabled = strcasecmp((string) cms_pref('prefGoogleAnalyticsOn', 'No'), 'Yes') === 0;
 $googleAnalyticsId = trim((string) cms_pref('prefGoogleAnalyticsCode', ''));
 $googleConsent = json_decode((string) ($_COOKIE['gew_cookie_consent'] ?? ''), true);

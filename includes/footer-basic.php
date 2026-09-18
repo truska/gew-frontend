@@ -175,6 +175,7 @@ if (isset($pdo) && $pdo instanceof PDO) {
   }
 ?>
 
+<?php if (empty($disableCookieConsent)): ?>
 <?php
   $cookieConsentVersion = 2;
   $cookieConsentStored = json_decode((string) ($_COOKIE['gew_cookie_consent'] ?? ''), true);
@@ -214,6 +215,7 @@ if (isset($pdo) && $pdo instanceof PDO) {
   }
 ?>
 </script>
+<?php endif; ?>
 <?php $announcementScriptVersion = @filemtime(__DIR__ . '/../js/announcement.js') ?: 1; ?>
 <script src="/js/announcement.js?v=<?php echo rawurlencode((string) $announcementScriptVersion); ?>"></script>
 </body>

@@ -5,6 +5,7 @@
 $hideFooterUsefulLinks = true;
 $hideFooterFeature = true;
 $hideFooterLegalLinks = true;
+$disableCookieConsent = true;
 $holdingFooterLogo = 'green-energy-wind-name-logo.png';
 $holdingSiteName = (string) cms_pref('prefSiteName', 'Green Energy Wind');
 $footerExtraColumnHtml = '<img src="/filestore/images/logos/'

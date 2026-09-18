@@ -3,4 +3,5 @@
 // are removed.
 $hideAffiliateLogos = true;
 $showBlankMenuBar = true;
+$disableCookieConsent = true;
 include __DIR__ . '/header-basic.php';
