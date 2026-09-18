@@ -72,6 +72,9 @@ if (file_exists($cmsImagesPath)) {
       <?php endif; ?>
     </div>
   </div>
+  <?php if (!empty($showBlankMenuBar)): ?>
+    <div class="holding-menu-spacer" aria-hidden="true"></div>
+  <?php else: ?>
   <nav class="navbar navbar-expand-lg" aria-label="Main navigation">
     <div class="container">
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainMenu" aria-controls="mainMenu" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
@@ -92,6 +95,7 @@ if (file_exists($cmsImagesPath)) {
       </div>
     </div>
   </nav>
+  <?php endif; ?>
 </header>
 <?php
 if (empty($pageNotFound)) {

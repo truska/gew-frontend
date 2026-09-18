@@ -55,6 +55,7 @@ body { color: var(--color-text); font-family: 'Montserrat', Arial, sans-serif; l
   .header-tagline { grid-column: 1 / span 3; grid-row: 2; }
 }
 .navbar { background: var(--color-primary); padding: 0; }
+.holding-menu-spacer { width: 100%; height: .65rem; background: var(--color-primary); }
 .navbar .nav-link { color: #fff; padding: 1rem 1.15rem !important; }
 .navbar .nav-link:hover, .navbar .nav-link:focus { background: var(--color-secondary); color: var(--color-text); }
 .navbar-toggler { margin: .6rem 0; background: #fff; }
